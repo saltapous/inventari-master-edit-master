@@ -1,0 +1,201 @@
+<% layout('layouts/boilerplate')%>
+
+    <h1>Editar Comanda núm. <%= invoice.numInvoice %>
+    </h1>
+
+
+    <p>
+        <b>Responsable: <%= invoice.responsable.username %> </b>
+
+
+    </p>
+
+    <table class="table table-condensed table-striped">
+
+        <form action="/invoices/<%=invoice._id%>?_method=PUT" method="POST" id="formulari" class="validated-form">
+
+            <tr>
+                <th><small>Naturalesa</th></small>
+                <th><small>Tipus</th></small>
+                <th><small> Article</th>
+                <th><small>Quantitat</small></th>
+                <th><small>Preu unitari</small></th>
+                <th><small>Tipus IVA</small></th>
+                <th><small>Subtotal</small></th>
+                <th><small>Unitat de destí</small></th>
+                <th><small>Proveidor</small></th>
+                <th><small></small></th>
+                <th><small></small></th>
+                <th><small></small></th>
+
+            </tr>
+
+
+
+            <% let i=0; for (let linia of invoice.invoice) { i++ %>
+
+
+                <tr class="trs">
+
+                    <div class="form-group container-fluid">
+
+
+                        <td>
+                            <div class="form-control-sm "><small><input class="esquerra mitja tr<%=i%>" type="text"
+                                        value="<%= linia[0] %>" id="naturalesaInput"></small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-control-sm"><small><input class="petit_mitja esquerra tr<%=i%>" type="text"
+                                        value="<%= linia[1] %>" id="tipusInput"> </small> </div>
+                        </td>
+                        <td>
+                            <div class="form-control-sm"><small><input type="text" class="mitja esquerra tr<%=i%>"
+                                        value="<%= linia[2] %>" id="articleInput"> </small> </div>
+                        </td>
+                        <td>
+                            <div class="numeros form-control-sm"><small><input class="unitari numeros tr<%=i%>"
+                                        type="number" id="quantitatInput" value="<%= linia[3] %>">u</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="numeros form-control-sm"><small><input class="petit numeros tr<%=i%>"
+                                        type="number" id="preuInput" value="<%= linia[4] %>">€/u</small> </div>
+                        </td>
+                        <td>
+                            <div class="numeros form-control-sm"><small><input class="numeros unitari tr<%=i%>"
+                                        type="number" id="ivaInput" value="<%= linia[5] %>">%</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="numeros form-control-sm"><small><input class="petit_mitja numeros tr<%=i%>"
+                                        type="text" id="subtotalInput"
+                                        value="<%= (linia[3]*linia[4]*(1+linia[5]/100)).toFixed(2) %>">€</small> </div>
+                        </td>
+                        <td>
+                            <div class="camps form-control-sm"><small><input class="mitja esquerra tr<%=i%>" type="text"
+                                        id="unitatInput" value="<%= linia[6] %>"> </small> </div>
+                        </td>
+
+
+                        <input type="hidden" class="tr<%=i%>" id="zonaInput" value="<%= linia[7] %>">
+
+
+                        <input type="hidden" class="tr<%=i%>" id="plantaInput" value="<%= linia[8] %>">
+
+                        <input type="hidden" class="tr<%=i%>" id="areaInput" value="<%= linia[9] %>">
+
+                        <td>
+                            <div class="camps form-control-sm"><small><input class="mitja esquerra tr<%=i%>" type="text"
+                                        id="proveidorInput" value="<%= linia[10] %>"> </small>
+                            </div>
+                        </td></small>
+                    </div>
+
+
+                    </td>
+
+
+                    <input type="text" id="invoiceAenviar" name="invoice[invoice]">
+
+
+                    <input id="TotalAenviar" type="number" name="invoice[total]" value="<%= invoice.total.toFixed(2) %>">
+
+
+
+                </tr>
+                <% } %>
+
+
+
+                    <td><button id="relative" class="btn btn-primary form-control">Modificar Comanda</button></td>
+                    </div>
+
+
+
+
+
+
+
+
+
+        </form>
+        <button id="recalcular">Recalcular numeros</button>
+    </table>
+
+    <script>
+
+
+let albara = [];
+        const botoRecalcular = document.querySelector('#recalcular');
+        botoRecalcular.addEventListener('click', assignarValors);
+
+
+
+        
+        function assignarValors() {
+            let linia = [];
+
+
+            const trs = document.querySelectorAll('.trs');
+
+
+            for (j = 1; j <= trs.length; j++) {
+
+                const inputsTaula = document.querySelectorAll(`.tr${j}`);
+
+                const naturalesa = inputsTaula[0].value;
+                const tipus = inputsTaula[1].value;
+                const article = inputsTaula[2].value;
+                const quantitat = inputsTaula[3].value;
+                const preu = inputsTaula[4].value;
+                const iva = inputsTaula[5].value;
+                const subtotal = inputsTaula[6].value;
+                const unitat = inputsTaula[7].value;
+                const zona = inputsTaula[8].value;
+                const planta = inputsTaula[9].value;
+                const area = inputsTaula[10].value;
+                const proveidor = inputsTaula[11].value;
+
+                linia = [[naturalesa], [tipus], [article], [quantitat], [preu], [iva],
+                [subtotal], [unitat], [zona], [planta], [area], [proveidor]]
+
+
+                //console.log(linia)
+
+
+
+
+                albara.push(linia);
+
+
+                console.log('albara = ', albara)
+                //invoiceAenviar.value = albara;
+
+                //console.log(albara);
+            }
+
+
+            let invoiceAEnviar = [];
+
+            let invoiceAenviar = document.querySelector('#invoiceAenviar');
+
+            invoiceAenviar.value = albara;
+
+
+            console.log(invoiceAenviar)
+
+            console.log(albara)
+
+
+
+
+
+
+
+
+        }
+        const totalAenviar = document.querySelector('#TotalAenviar');
+        //totalAenviar.value = 100;
+
+    </script>
